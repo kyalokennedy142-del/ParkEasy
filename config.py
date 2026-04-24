@@ -3,6 +3,8 @@ from datetime import timedelta
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 local_env_path = os.path.join(basedir, "instance", ".env")
+is_vercel = os.environ.get("VERCEL") == "1"
+default_db_path = "/tmp/parking.db" if is_vercel else os.path.join(basedir, "instance", "parking.db")
 
 
 def load_local_env(path):
@@ -39,7 +41,7 @@ class Config:
     
     # SQLite: Use absolute path to avoid "unable to open file" errors
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or \
-        f"sqlite:///{os.path.join(basedir, 'instance', 'parking.db')}"
+        f"sqlite:///{default_db_path}"
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     

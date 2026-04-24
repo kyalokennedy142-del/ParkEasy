@@ -2,5 +2,9 @@ instance/.env
 instance/parking.db
 venv/
 .venv/
+.npm-cache/
+.vercel/
 __pycache__/
 *.pyc
+
+.vercel
