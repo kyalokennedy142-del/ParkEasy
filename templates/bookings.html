@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<h2>My Booking History</h2>
+<p style="color: var(--text-muted); margin-bottom: 1rem;">View your reservations and access payment receipts.</p>
+{% if bookings %}
+<table class="admin-table">
+    <thead><tr><th>Date</th><th>Slot</th><th>Amount</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for booking in bookings %}
+    <tr>
+        <td>{{ booking.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td><strong>{{ booking.slot.slot_number }}</strong></td>
+        <td>${{ "%.2f"|format(booking.amount) }}</td>
+        <td><span class="status-badge available">{{ booking.payment_status|upper }}</span></td>
+        <td><a href="{{ url_for('view_receipt', booking_id=booking.id) }}" class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">View Receipt</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <p style="font-size: 1.2rem; color: var(--text-muted);">No bookings yet.</p>
+    <a href="{{ url_for('dashboard') }}" class="btn" style="max-width: 200px; margin: 1rem auto;">Browse Slots</a>
+</div>
+{% endif %}
+{% endblock %}

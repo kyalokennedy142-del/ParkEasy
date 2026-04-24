@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Receipt #{{ booking.id }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 2rem auto; text-align: center;">
+    <h2 style="margin-bottom: 0.5rem;">🧾 Payment Receipt</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Ref: #{{ booking.id }}-{{ booking.booked_at.strftime('%Y%m%d%H%M') }}</p>
+    <div style="text-align: left; background: #f8fafc; padding: 1.5rem; border-radius: var(--radius); margin-bottom: 2rem;">
+        <p><strong>User:</strong> {{ booking.user.username }}</p>
+        <p><strong>Slot:</strong> {{ booking.slot.slot_number }}</p>
+        <p><strong>Date:</strong> {{ booking.booked_at.strftime('%B %d, %Y at %H:%M') }}</p>
+        <p><strong>Status:</strong> <span class="status-badge available">PAID</span></p>
+    </div>
+    <div style="border-top: 2px dashed var(--border); padding-top: 1.5rem;">
+        <p style="font-size: 0.9rem; color: var(--text-muted);">Total Paid</p>
+        <h3 style="font-size: 2rem; margin: 0.5rem 0;">${{ "%.2f"|format(booking.amount) }}</h3>
+    </div>
+    <div class="btn-group" style="margin-top: 2rem;">
+        <button onclick="window.print()" class="btn btn-outline">🖨️ Print</button>
+        <a href="{{ url_for('my_bookings') }}" class="btn">Back to Bookings</a>
+    </div>
+</div>
+{% endblock %}

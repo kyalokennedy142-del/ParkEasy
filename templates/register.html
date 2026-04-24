@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-container card">
+    <h2>Create Account</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Choose a username" required>
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Create a secure password" required>
+        
+        <button type="submit">Register</button>
+    </form>
+    <p style="margin-top: 1rem; text-align: center;">
+        Already registered? <a href="{{ url_for('login') }}" style="color: var(--primary);">Login here</a>
+    </p>
+</div>
+{% endblock %}

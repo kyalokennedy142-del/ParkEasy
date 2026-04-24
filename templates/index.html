@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <h1>Find & Book Parking in Seconds</h1>
+    <p>Real-time availability, secure booking, and instant confirmation.</p>
+    <div class="btn-group">
+        <a href="{{ url_for('login') }}" class="btn">Login to Book</a>
+        <a href="{{ url_for('register') }}" class="btn btn-outline">Create Account</a>
+    </div>
+</section>
+{% endblock %}

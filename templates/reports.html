@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Admin Reports{% endblock %}
+{% block content %}
+<h2>Admin Analytics & Reports</h2>
+<div class="slot-grid" style="margin-bottom: 2rem;">
+    <div class="card" style="text-align: center;">
+        <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Total Bookings</p>
+        <h3 style="font-size: 2.5rem; margin: 0;">{{ total_bookings }}</h3>
+    </div>
+    <div class="card" style="text-align: center;">
+        <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Simulated Revenue</p>
+        <h3 style="font-size: 2.5rem; margin: 0; color: var(--success);">${{ "%.2f"|format(total_revenue) }}</h3>
+    </div>
+    <div class="card" style="text-align: center;">
+        <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Current Occupancy</p>
+        <h3 style="font-size: 2.5rem; margin: 0;">{{ occupancy_rate }}%</h3>
+    </div>
+</div>
+<h3>Recent Transactions</h3>
+{% if recent_bookings %}
+<table class="admin-table">
+    <thead><tr><th>ID</th><th>User</th><th>Slot</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+    <tbody>
+    {% for b in recent_bookings %}
+    <tr>
+        <td>#{{ b.id }}</td>
+        <td>{{ b.user.username }}</td>
+        <td>{{ b.slot.slot_number }}</td>
+        <td>{{ b.booked_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>${{ "%.2f"|format(b.amount) }}</td>
+        <td><span class="status-badge available">{{ b.payment_status|upper }}</span></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p style="color: var(--text-muted); margin-top: 1rem;">No transactions recorded yet.</p>
+{% endif %}
+{% endblock %}

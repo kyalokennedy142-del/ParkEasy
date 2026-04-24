@@ -1,0 +1,6 @@
+instance/.env
+instance/parking.db
+venv/
+.venv/
+__pycache__/
+*.pyc

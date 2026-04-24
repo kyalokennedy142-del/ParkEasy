@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block extra_head %}
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+>
+{% endblock %}
+
+{% block content %}
+<h2>Your Parking Dashboard</h2>
+<p style="color: var(--text-muted); margin-bottom: 1rem;">Select an available slot below to reserve it instantly and use the free live map to see exactly where open spaces are.</p>
+
+<section class="parking-map-shell">
+    <div class="parking-map-card">
+        <div class="map-copy">
+            <p class="eyebrow">Leaflet Map View</p>
+            <h3>Empty slots around the parking area</h3>
+            {% if recommended_slot %}
+            <p>
+                Best option right now:
+                <strong>{{ recommended_slot.slot_number }}</strong>
+                in {{ recommended_slot.zone }}.
+                The map highlights it in blue.
+            </p>
+            {% else %}
+            <p>All slots are currently occupied. Please check again soon or ask the admin to reset availability.</p>
+            {% endif %}
+        </div>
+
+        <div
+            id="parking-leaflet-map"
+            class="parking-leaflet-map"
+            data-center-lat="{{ parking_map_center.lat }}"
+            data-center-lng="{{ parking_map_center.lng }}"
+        ></div>
+
+        <div class="map-note">
+            This map uses Leaflet with OpenStreetMap tiles, which is a good free option for learning and small student projects.
+        </div>
+
+        <div class="map-legend">
+            <span><i class="legend-dot available"></i> Empty slot</span>
+            <span><i class="legend-dot booked"></i> Occupied slot</span>
+            <span><i class="legend-dot recommended"></i> Recommended</span>
+        </div>
+    </div>
+
+    <div class="card availability-card">
+        <h3>Available now</h3>
+        {% if available_slots %}
+        <div class="availability-list">
+            {% for slot in available_slots %}
+            <div class="availability-item {% if recommended_slot and recommended_slot.id == slot.id %}recommended{% endif %}">
+                <div>
+                    <strong>{{ slot.slot_number }}</strong>
+                    <p>{{ slot.zone }} - Row {{ slot.row }}</p>
+                </div>
+                {% if recommended_slot and recommended_slot.id == slot.id %}
+                <span class="status-badge available">BEST CHOICE</span>
+                {% else %}
+                <span class="status-badge available">OPEN</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted);">There are no free slots at the moment.</p>
+        {% endif %}
+    </div>
+</section>
+
+<div class="slot-grid">
+    {% for slot in slots %}
+    <div class="slot-card {{ slot.status }}">
+        <h3>{{ slot.slot_number }}</h3>
+        <span class="status-badge {{ slot.status }}">{{ slot.status|upper }}</span>
+        <p style="color: var(--text-muted);">{{ slot.zone }} - Row {{ slot.row }}</p>
+
+        {% if slot.status == "available" %}
+        <form method="POST" action="{{ url_for('pay_for_slot', slot_id=slot.id) }}">
+            <button type="submit" class="btn" style="background: var(--success); margin-top: 1rem;">
+                Book & Pay $5.00
+            </button>
+        </form>
+        {% else %}
+        <p style="margin-top: 1rem; color: var(--text-muted);">
+            Booked by: {{ slot.booked_by or "Unknown" }}
+        </p>
+        <button disabled style="margin-top: 1rem; background: var(--danger);">Reserved</button>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<script id="parking-slot-data" type="application/json">{{ slots|tojson }}</script>
+<script id="parking-map-center-data" type="application/json">{{ parking_map_center|tojson }}</script>
+{% endblock %}
+
+{% block extra_scripts %}
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+></script>
+{% endblock %}

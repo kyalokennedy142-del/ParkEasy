@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <div>
+        <h2>Admin Slot Management</h2>
+        <p style="color: var(--text-muted);">Manage reservations and reset availability.</p>
+    </div>
+    <div class="card" style="padding: 0.75rem 1.5rem; display: flex; gap: 2rem;">
+        <span><strong>{{ slots|length }}</strong> Total</span>
+        <span style="color: var(--success);"><strong>{{ slots|selectattr('status', 'equalto', 'available')|list|length }}</strong> Free</span>
+        <span style="color: var(--danger);"><strong>{{ slots|selectattr('status', 'equalto', 'booked')|list|length }}</strong> Occupied</span>
+    </div>
+</div>
+
+<table class="admin-table">
+    <thead>
+        <tr><th>Slot ID</th><th>Number</th><th>Status</th><th>Booked By</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+        {% for slot in slots %}
+        <tr>
+            <td>#{{ slot.id }}</td>
+            <td><strong>{{ slot.slot_number }}</strong></td>
+            <td><span class="status-badge {{ slot.status }}">{{ slot.status|upper }}</span></td>
+            <td>{{ slot.booked_by or '-' }}</td>
+            <td>
+                {% if slot.status == 'booked' %}
+                <form method="POST" action="{{ url_for('reset_slot', slot_id=slot.id) }}">
+                    <button type="submit" style="background: var(--warning); padding: 0.5rem 1rem; font-size: 0.9rem;">Reset</button>
+                </form>
+                {% else %}
+                <span style="color: var(--text-muted);">Available</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
